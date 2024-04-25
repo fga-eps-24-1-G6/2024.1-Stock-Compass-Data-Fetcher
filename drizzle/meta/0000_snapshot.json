@@ -1,0 +1,424 @@
+{
+  "id": "760167b7-51d7-4717-bb9f-3044ed8765aa",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "5",
+  "dialect": "pg",
+  "tables": {
+    "sc_balance_sheets": {
+      "name": "sc_balance_sheets",
+      "schema": "",
+      "columns": {
+        "company_id": {
+          "name": "company_id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "year": {
+          "name": "year",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quarter": {
+          "name": "quarter",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "net_revenue": {
+          "name": "net_revenue",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "costs": {
+          "name": "costs",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "gross_profit": {
+          "name": "gross_profit",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "net_profit": {
+          "name": "net_profit",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ebitda": {
+          "name": "ebitda",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ebit": {
+          "name": "ebit",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "taxes": {
+          "name": "taxes",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "gross_debt": {
+          "name": "gross_debt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "net_debt": {
+          "name": "net_debt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "equity": {
+          "name": "equity",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cash": {
+          "name": "cash",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "assets": {
+          "name": "assets",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "liabilities": {
+          "name": "liabilities",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "balance_sheets_company_idx": {
+          "name": "balance_sheets_company_idx",
+          "columns": [
+            "company_id"
+          ],
+          "isUnique": false
+        },
+        "balance_sheets_year_idx": {
+          "name": "balance_sheets_year_idx",
+          "columns": [
+            "year"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "sc_balance_sheets_company_id_sc_companies_id_fk": {
+          "name": "sc_balance_sheets_company_id_sc_companies_id_fk",
+          "tableFrom": "sc_balance_sheets",
+          "tableTo": "sc_companies",
+          "columnsFrom": [
+            "company_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "sc_balance_sheets_company_id_year_quarter_pk": {
+          "name": "sc_balance_sheets_company_id_year_quarter_pk",
+          "columns": [
+            "company_id",
+            "year",
+            "quarter"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "sc_companies": {
+      "name": "sc_companies",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cnpj": {
+          "name": "cnpj",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ipo": {
+          "name": "ipo",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "foundation_year": {
+          "name": "foundation_year",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "firm_value": {
+          "name": "firm_value",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "number_of_papers": {
+          "name": "number_of_papers",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "market_segment": {
+          "name": "market_segment",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sector": {
+          "name": "sector",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "segment": {
+          "name": "segment",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "sc_dividends": {
+      "name": "sc_dividends",
+      "schema": "",
+      "columns": {
+        "stock_id": {
+          "name": "stock_id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'Dividendo'"
+        },
+        "value": {
+          "name": "value",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ownership_date": {
+          "name": "ownership_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payment_date": {
+          "name": "payment_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "dividends_stock_idx": {
+          "name": "dividends_stock_idx",
+          "columns": [
+            "stock_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "sc_dividends_stock_id_sc_stocks_id_fk": {
+          "name": "sc_dividends_stock_id_sc_stocks_id_fk",
+          "tableFrom": "sc_dividends",
+          "tableTo": "sc_stocks",
+          "columnsFrom": [
+            "stock_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "sc_dividends_stock_id_payment_date_pk": {
+          "name": "sc_dividends_stock_id_payment_date_pk",
+          "columns": [
+            "stock_id",
+            "payment_date"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "sc_prices": {
+      "name": "sc_prices",
+      "schema": "",
+      "columns": {
+        "stock_id": {
+          "name": "stock_id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price_date": {
+          "name": "price_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "prices_stock_idx": {
+          "name": "prices_stock_idx",
+          "columns": [
+            "stock_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "sc_prices_stock_id_sc_stocks_id_fk": {
+          "name": "sc_prices_stock_id_sc_stocks_id_fk",
+          "tableFrom": "sc_prices",
+          "tableTo": "sc_stocks",
+          "columnsFrom": [
+            "stock_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "sc_prices_stock_id_price_date_pk": {
+          "name": "sc_prices_stock_id_price_date_pk",
+          "columns": [
+            "stock_id",
+            "price_date"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "sc_stocks": {
+      "name": "sc_stocks",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "external_id": {
+          "name": "external_id",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ticker": {
+          "name": "ticker",
+          "type": "varchar(7)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "company_id": {
+          "name": "company_id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "free_float": {
+          "name": "free_float",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tag_along": {
+          "name": "tag_along",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "avg_daily_liquidity": {
+          "name": "avg_daily_liquidity",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "sc_stocks_company_id_sc_companies_id_fk": {
+          "name": "sc_stocks_company_id_sc_companies_id_fk",
+          "tableFrom": "sc_stocks",
+          "tableTo": "sc_companies",
+          "columnsFrom": [
+            "company_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
