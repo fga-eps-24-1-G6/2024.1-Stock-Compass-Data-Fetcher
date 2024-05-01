@@ -1,5 +1,4 @@
-import { sql } from 'drizzle-orm';
-import { bigint, date, decimal, index, integer, pgTable, pgView, primaryKey, serial, varchar } from 'drizzle-orm/pg-core';
+import { bigint, date, decimal, index, integer, pgTable, serial, varchar } from 'drizzle-orm/pg-core';
 
 export const companies = pgTable('companies', {
     id: serial('id').primaryKey(),
@@ -37,6 +36,7 @@ export const prices = pgTable('prices', {
 })
 
 export const dividends = pgTable('dividends', {
+    id: serial('id').primaryKey(),
     stockId: serial('stock_id').references(() => stocks.id).notNull(),
     type: varchar('type', { length: 100 }).notNull().default('Dividendo'),
     value: decimal('value').notNull(),
@@ -44,12 +44,12 @@ export const dividends = pgTable('dividends', {
     paymentDate: date('payment_date').notNull(),
 }, (dividends) => {
     return {
-        pk: primaryKey({ columns: [dividends.stockId, dividends.paymentDate] }),
         stockIdx: index("dividends_stock_idx").on(dividends.stockId),
     };
 });
 
 export const balanceSheets = pgTable('balance_sheets', {
+    id: serial('id').primaryKey(),
     companyId: serial('company_id').references(() => companies.id).notNull(),
     year: integer('year').notNull(),
     quarter: integer('quarter').notNull(),
@@ -68,7 +68,6 @@ export const balanceSheets = pgTable('balance_sheets', {
     liabilities: bigint('liabilities', { mode: 'number' })
 }, (balanceSheets) => {
     return {
-        pk: primaryKey({ columns: [balanceSheets.companyId, balanceSheets.year, balanceSheets.quarter] }),
         companyIdx: index("balance_sheets_company_idx").on(balanceSheets.companyId),
         yearIdx: index("balance_sheets_year_idx").on(balanceSheets.year),
     };

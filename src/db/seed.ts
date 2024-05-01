@@ -1,40 +1,10 @@
-import { neon } from '@neondatabase/serverless';
-import { drizzle as drizzleNeon } from 'drizzle-orm/neon-http';
-import { drizzle as drizzelNode } from "drizzle-orm/node-postgres";
-import { Client } from "pg";
-import * as schema from "./schema";
-import { companies } from './schema';
-
-const connectDB = async () => {
-    if (process.env.ENVIRONMENT == "development") {
-        const client = new Client({
-            connectionString: process.env.DEV_DB_URL,
-        });
-
-        await client.connect();
-        // refatorar para conseguir encerrar conexao apos uso
-
-        const db = drizzelNode(client);
-        return db;
-    }
-
-    const sql = neon(process.env.DB_URL!);
-
-    const db = drizzleNeon(sql, {
-        schema,
-    });
-    return db;
-}
+import { companies } from "./schema";
+import { connectDB } from "src/drizzle/drizzel.provider";
 
 const main = async () => {
     try {
-        console.log("Connecting with DB...");
-
-        const db = await connectDB();
-
-        console.log("Connection established!");
-
         console.log("Seeding DB...");
+        const db = await connectDB();
 
         await db.insert(companies).values({
             name: "PETROLEO BRASILEIRO S.A. PETROBRAS",
