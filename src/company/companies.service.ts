@@ -19,7 +19,6 @@ export class CompaniesService {
     }
 
     async createCompany(createCompanyDto: CreateCompanyDto): Promise<Company | undefined> {
-        console.log('chegou 2');
         return await this.companyRepository.create(createCompanyDto);
     }
 
