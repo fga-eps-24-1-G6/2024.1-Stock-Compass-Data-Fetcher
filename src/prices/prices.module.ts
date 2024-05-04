@@ -8,5 +8,6 @@ import { PriceDrizzleRepository } from "./repositories/price.drizzle.repository"
     imports: [DrizzleModule],
     controllers: [PricesController],
     providers: [PricesService, PriceDrizzleRepository],
+    exports: [PriceDrizzleRepository]
 })
 export class PriceModule { }

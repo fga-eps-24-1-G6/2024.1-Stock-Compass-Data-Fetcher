@@ -8,4 +8,5 @@ export interface PriceRepository {
     create(createPriceDto: CreatePriceDto): Promise<Price>;
     update(id: number, updatePriceDto: UpdatePriceDto): Promise<Price>;
     delete(id: number): Promise<void>;
+    deleteAll(): Promise<void>;
 }

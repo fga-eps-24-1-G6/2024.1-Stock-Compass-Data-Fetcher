@@ -77,4 +77,8 @@ export class PriceDrizzleRepository implements PriceRepository {
     async delete(id: number): Promise<void> {
         await this.db.delete(prices).where(eq(prices.id, id));
     }
+
+    async deleteAll(): Promise<void> {
+        await this.db.delete(prices);
+    }
 }

@@ -8,5 +8,6 @@ import { BalanceSheetDrizzleRepository } from "./repositories/balanceSheet.drizz
     imports: [DrizzleModule],
     controllers: [BalanceSheetsController],
     providers: [BalanceSheetsService, BalanceSheetDrizzleRepository],
+    exports: [BalanceSheetDrizzleRepository]
 })
 export class BalanceSheetModule { }

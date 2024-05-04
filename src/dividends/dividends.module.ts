@@ -8,5 +8,6 @@ import { DividendDrizzleRepository } from "./repositories/dividend.drizzle.repos
     imports: [DrizzleModule],
     controllers: [DividendsController],
     providers: [DividendsService, DividendDrizzleRepository],
+    exports: [DividendDrizzleRepository]
 })
 export class DividendModule { }

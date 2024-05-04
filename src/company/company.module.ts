@@ -8,5 +8,6 @@ import { CompanyDrizzleRepository } from "./repositories/company.drizzle.reposit
     imports: [DrizzleModule],
     controllers: [CompaniesController],
     providers: [CompaniesService, CompanyDrizzleRepository],
+    exports: [CompanyDrizzleRepository]
 })
 export class CompanyModule { }

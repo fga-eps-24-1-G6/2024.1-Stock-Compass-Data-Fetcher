@@ -18,6 +18,11 @@ export class CompanyDrizzleRepository implements CompanyRepository {
         return result[0] as Company;
     }
 
+    async findByName(name: string): Promise<Company | undefined> {
+        const result = await this.db.select().from(companies).where(eq(companies.name, name));
+        return result[0] as Company;
+    }
+
     async findAll(): Promise<Company[] | undefined> {
         const result = await this.db.select().from(companies);
         return result as Company[];
@@ -54,5 +59,9 @@ export class CompanyDrizzleRepository implements CompanyRepository {
 
     async delete(id: number): Promise<void> {
         await this.db.delete(companies).where(eq(companies.id, id));
+    }
+
+    async deleteAll(): Promise<void> {
+        await this.db.delete(companies);
     }
 }

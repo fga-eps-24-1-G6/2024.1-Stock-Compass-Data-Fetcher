@@ -8,5 +8,6 @@ import { StockDrizzleRepository } from "./repositories/stock.drizzle.repository"
     imports: [DrizzleModule],
     controllers: [StocksController],
     providers: [StocksService, StockDrizzleRepository],
+    exports: [StockDrizzleRepository]
 })
 export class StockModule { }

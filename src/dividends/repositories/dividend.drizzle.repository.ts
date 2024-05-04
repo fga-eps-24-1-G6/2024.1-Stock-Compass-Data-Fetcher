@@ -83,4 +83,8 @@ export class DividendDrizzleRepository implements DividendRepository {
     async delete(id: number): Promise<void> {
         await this.db.delete(dividends).where(eq(dividends.id, id));
     }
+
+    async deleteAll(): Promise<void> {
+        await this.db.delete(dividends);
+    }
 }

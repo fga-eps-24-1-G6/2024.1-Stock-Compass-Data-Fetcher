@@ -7,4 +7,5 @@ export interface DividendRepository {
     create(createDividendDto: CreateDividendDto): Promise<Dividend>;
     update(id: number, updateDividendDto: UpdateDividendDto): Promise<Dividend>;
     delete(id: number): Promise<void>;
+    deleteAll(): Promise<void>;
 }

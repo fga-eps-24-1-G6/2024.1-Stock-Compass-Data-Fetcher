@@ -23,6 +23,11 @@ export class StockDrizzleRepository implements StockRepository {
         return result as Stock[];
     }
 
+    async findByTicker(ticker: string): Promise<Stock | undefined> {
+        const result = await this.db.select().from(stocks).where(eq(stocks.ticker, ticker));
+        return result[0] as Stock;
+    }
+
     async create(createStockDto: CreateStockDto): Promise<Stock> {
         const result = await this.db.insert(stocks).values(createStockDto).returning();
 
@@ -43,5 +48,9 @@ export class StockDrizzleRepository implements StockRepository {
 
     async delete(id: number): Promise<void> {
         await this.db.delete(stocks).where(eq(stocks.id, id));
+    }
+
+    async deleteAll(): Promise<void> {
+        await this.db.delete(stocks);
     }
 }

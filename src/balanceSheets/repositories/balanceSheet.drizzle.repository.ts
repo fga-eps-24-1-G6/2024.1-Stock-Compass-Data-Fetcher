@@ -49,4 +49,8 @@ export class BalanceSheetDrizzleRepository implements BalanceSheetRepository {
     async delete(id: number): Promise<void> {
         await this.db.delete(balanceSheets).where(eq(balanceSheets.id, id));
     }
+
+    async deleteAll(): Promise<void> {
+        await this.db.delete(balanceSheets);
+    }
 }
