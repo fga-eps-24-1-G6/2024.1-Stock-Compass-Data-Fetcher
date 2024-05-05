@@ -5,6 +5,7 @@ export interface DividendRepository {
     findOne(id: number): Promise<Dividend | undefined>;
     findAll(): Promise<Dividend[]>;
     create(createDividendDto: CreateDividendDto): Promise<Dividend>;
+    createMultiple(createDividendDto: CreateDividendDto[]): Promise<Dividend[]>;
     update(id: number, updateDividendDto: UpdateDividendDto): Promise<Dividend>;
     delete(id: number): Promise<void>;
     deleteAll(): Promise<void>;

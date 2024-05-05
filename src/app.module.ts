@@ -6,6 +6,7 @@ import { PriceModule } from './prices/prices.module';
 import { DividendModule } from './dividends/dividends.module';
 import { BalanceSheetModule } from './balanceSheets/balanceSheets.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { TasksModule } from './tasks/tasks.module';
 import { BullModule } from '@nestjs/bull';
 
 @Module({
@@ -20,6 +21,7 @@ import { BullModule } from '@nestjs/bull';
         port: 6379,
       },
     }),
+    TasksModule,
     CompanyModule,
     StockModule,
     PriceModule,

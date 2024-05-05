@@ -1,10 +1,10 @@
 export interface CreatePriceDto {
     stockId: number,
-    value: number,
-    priceDate: Date
+    value: string,
+    priceDate: string
 };
 
 export interface UpdatePriceDto {
-    value?: number,
-    priceDate?: Date
+    value?: string,
+    priceDate?: string
 };

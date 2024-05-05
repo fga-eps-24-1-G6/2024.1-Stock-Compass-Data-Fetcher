@@ -35,6 +35,7 @@ export class PriceDrizzleRepository implements PriceRepository {
 
     async findByStock(stockId: number): Promise<Price[] | undefined> {
         const result = await this.db.select().from(prices).where(eq(prices.stockId, stockId));
+
         return result.map((item) => (
             {
                 ...item,
@@ -45,17 +46,23 @@ export class PriceDrizzleRepository implements PriceRepository {
     }
 
     async create(createPriceDto: CreatePriceDto): Promise<Price> {
-        const result = await this.db.insert(prices).values({
-            ...createPriceDto,
-            value: createPriceDto.value.toString(),
-            priceDate: createPriceDto.priceDate.toString()
-        }).returning();
+        const result = await this.db.insert(prices).values(createPriceDto).returning();
 
         return {
             ...result[0],
             value: parseFloat(result[0].value),
             priceDate: new Date(result[0].priceDate)
         } as Price;
+    }
+
+    async createMultiple(createPriceDto: CreatePriceDto[]): Promise<Price[]> {
+        const result = await this.db.insert(prices).values(createPriceDto).returning();
+
+        return result.map(item => ({
+            ...item,
+            value: parseFloat(item.value),
+            priceDate: new Date(item.priceDate)
+        })) as Price[];
     }
 
     async update(id: number, updatePriceDto: UpdatePriceDto): Promise<Price> {

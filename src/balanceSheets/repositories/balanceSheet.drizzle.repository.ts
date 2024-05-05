@@ -34,6 +34,12 @@ export class BalanceSheetDrizzleRepository implements BalanceSheetRepository {
         return result[0];
     }
 
+    async createMultiple(createBalanceSheetDto: CreateBalanceSheetDto[]): Promise<BalanceSheet[]> {
+        const result = await this.db.insert(balanceSheets).values(createBalanceSheetDto).returning();
+
+        return result;
+    }
+
     async update(id: number, updateBalanceSheetDto: UpdateBalanceSheetDto): Promise<BalanceSheet> {
         const filteredEntries = Object.entries(updateBalanceSheetDto).filter(([_, value]) => value !== null);
         const updateData = Object.fromEntries(filteredEntries);

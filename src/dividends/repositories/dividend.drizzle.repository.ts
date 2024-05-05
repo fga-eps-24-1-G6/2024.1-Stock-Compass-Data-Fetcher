@@ -63,6 +63,23 @@ export class DividendDrizzleRepository implements DividendRepository {
         } as Dividend;
     }
 
+    async createMultiple(createDividendDto: CreateDividendDto[]): Promise<Dividend[]> {
+        const input = createDividendDto.map(item => ({
+            ...item,
+            value: item.value.toString(),
+            ownershipDate: item.ownershipDate.toString(),
+            paymentDate: item.paymentDate.toString()
+        }))
+        const result = await this.db.insert(dividends).values(input).returning();
+        const output = result.map(item => ({
+            ...item,
+            value: parseFloat(item.value),
+            ownershipDate: new Date(item.ownershipDate),
+            paymentDate: new Date(item.paymentDate)
+        }));
+        return output as Dividend[];
+    }
+
     async update(id: number, updateDividendDto: UpdateDividendDto): Promise<Dividend> {
         const filteredEntries = Object.entries(updateDividendDto).filter(([_, value]) => value !== null);
         const updateData = Object.fromEntries(filteredEntries);

@@ -75,6 +75,58 @@ const getCompanyIndicators = async (page: Page) => {
     return companyData;
 }
 
+const getDividendsHistory = async (page: Page) => {
+    await page.waitForSelector('.dataTables_paginate');
+
+    let hasNextButton = true;
+    const dividends = [];
+
+    while (hasNextButton) {
+        const pageData = await page.evaluate(() => {
+            const table = document.querySelector('#table-dividends-history');
+            const rows = table.querySelectorAll('tbody tr');
+
+            const values = [];
+            rows.forEach((row) => {
+                const cells = row.querySelectorAll('td');
+                const type = cells[0].innerText;
+                const ownershipDate = cells[1].innerText;
+                const paymentDate = cells[2].innerText;
+                const value = parseFloat(cells[3].innerText.trim().replace(',', '.'));
+
+                const currentYear = new Date().getFullYear();
+                const tenYearsAgo = (currentYear - 11);
+                const reachedLastDecade = parseInt(paymentDate.slice(-4)) <= tenYearsAgo;
+
+                if (!reachedLastDecade) {
+                    values.push({
+                        type,
+                        ownershipDate,
+                        paymentDate,
+                        value,
+                    });
+                }
+            });
+
+            return values;
+        });
+
+        dividends.push(...pageData);
+
+        hasNextButton = await page.evaluate(() => {
+            const nextButton = document.querySelector('#table-dividends-history_next');
+            return !nextButton.classList.contains('disabled');
+        });
+
+        if (hasNextButton) {
+            const nextButton = await page.$('#table-dividends-history_next');
+            await nextButton.click();
+        }
+    }
+
+    return dividends;
+}
+
 export const scrapeStocks = async () => {
     const stocks = [];
     const tickers = await scrapeStockList();
@@ -103,27 +155,30 @@ export const scrapeStocks = async () => {
             timeout: 0,
         });
 
-        const company_data = {
+        const companyData = {
             ... await getCompanyInfo(page),
             ... await getCompanyIndicators(page)
         };
+
+        const dividendHistory = await getDividendsHistory(page);
 
         await new Promise(resolve => setTimeout(resolve, 3000));
 
         page.off('response', responseHandler);
 
         const stockUrl = urls.find(url => url.includes('cotacao/ticker/'));
-        const stock_id = typeof stockUrl != 'undefined' ? stockUrl.split('cotacao/ticker/')[1] : "";
+        const stockId = typeof stockUrl != 'undefined' ? stockUrl.split('cotacao/ticker/')[1] : "";
 
         const companyUrl = urls.find(url => url.includes('receitaliquida/chart/'));
-        const company_id = typeof companyUrl != 'undefined' ? companyUrl.split('receitaliquida/chart/')[1].split('/')[0] : "";
+        const companyId = typeof companyUrl != 'undefined' ? companyUrl.split('receitaliquida/chart/')[1].split('/')[0] : "";
 
-        if (stock_id || company_id) {
+        if (stockId || companyId) {
             stocks.push({
                 ticker: data,
-                stock_id,
-                company_id,
-                company_data
+                stockId,
+                companyId,
+                companyData,
+                dividendHistory
             });
             console.log('Dados de ' + data + ' adicionados')
         }
