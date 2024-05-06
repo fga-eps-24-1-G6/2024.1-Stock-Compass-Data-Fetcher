@@ -1,10 +1,32 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
+import { CompanyModule } from './company/company.module';
+import { StockModule } from './stocks/stocks.module';
+import { PriceModule } from './prices/prices.module';
+import { DividendModule } from './dividends/dividends.module';
+import { BalanceSheetModule } from './balanceSheets/balanceSheets.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksModule } from './tasks/tasks.module';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+    }),
+    ScheduleModule.forRoot(),
+    BullModule.forRoot({
+      redis: {
+        host: 'redis',
+        port: 6379,
+      },
+    }),
+    TasksModule,
+    CompanyModule,
+    StockModule,
+    PriceModule,
+    DividendModule,
+    BalanceSheetModule
+  ],
 })
-export class AppModule {}
+export class AppModule { }
