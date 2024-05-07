@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import puppeteer, { HTTPResponse, Page } from 'puppeteer';
 import { Cluster } from 'puppeteer-cluster';
 import fs from "fs";
