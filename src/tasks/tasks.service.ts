@@ -13,6 +13,7 @@ import { StockDrizzleRepository } from "src/stocks/repositories/stock.drizzle.re
 import { StockRepository } from "src/stocks/repositories/stock.repository";
 import { InjectQueue } from "@nestjs/bull";
 import { Queue } from "bull";
+import { handleNewDividends } from "./handlers/dividend.handler";
 
 @Injectable()
 export class TasksService {
@@ -23,6 +24,8 @@ export class TasksService {
         @Inject(PriceDrizzleRepository) private readonly priceRepository: PriceRepository,
         @Inject(BalanceSheetDrizzleRepository) private readonly balanceSheetRepository: BalanceSheetRepository,
         @InjectQueue('register') private readonly registerQueue: Queue,
+        @InjectQueue('new_price') private readonly newPriceQueue: Queue,
+        @InjectQueue('new_dividends') private readonly newDividendsQueue: Queue,
     ) { }
 
     private readonly logger = new Logger(TasksService.name);
@@ -47,8 +50,8 @@ export class TasksService {
             //      fetch old dividends
             //      featch old balanceSheets
 
-            for(const item of data){
-                await this.registerQueue.add(item, { 
+            for (const item of data) {
+                await this.registerQueue.add(item, {
                     delay: 200,
                     attempts: 3,
                     timeout: 10000
@@ -59,6 +62,22 @@ export class TasksService {
             this.logger.log('Populated application successfully! : )');
         } catch (error) {
             throw new HttpException((error as Error).message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //@Cron(CronExpression.EVERY_DAY_AT_1AM)
+    async fetchNewPrices() {
+        this.logger.debug('Fetching new prices');
+        // get stock tickers
+        // queu stocks
+        //      get new price
+        //      check if there is price with new date exists
+        //      if not => create new price
+        const stocksWithPrices = await this.priceRepository.findLatest();
+
+        for (const stock of stocksWithPrices) {
+            await this.newPriceQueue.add(stock);
+            this.logger.debug(`Enqued ${stock.ticker}`);
         }
     }
 }

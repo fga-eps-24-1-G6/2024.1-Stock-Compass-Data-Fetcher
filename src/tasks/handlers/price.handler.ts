@@ -10,3 +10,14 @@ export function handlePriceHistoryData(stockId: number, data: any): CreatePriceD
 
     return prices;
 }
+
+export function handleNewPriceData(stockId: number, data: any): CreatePriceDto {
+    if(!data['last_update'])
+        return null;
+
+    return {
+        stockId,
+        value: data.price.toString(),
+        priceDate: data['last_update']
+    };
+}

@@ -14,13 +14,13 @@ import { DividendRepository } from 'src/dividends/repositories/dividend.reposito
 import { PriceDrizzleRepository } from 'src/prices/repositories/price.drizzle.repository';
 import { PriceRepository } from 'src/prices/repositories/price.repository';
 import { StockRepository } from 'src/stocks/repositories/stock.repository';
-import { handleCompanyData, handleStockData } from './handlers/stock.handler';
-import { handleDividendsData } from './handlers/dividend.handler';
-import { handleBalanceSheetsData } from './handlers/balanceSheet.handler';
-import { handlePriceHistoryData } from './handlers/price.handler';
+import { handleCompanyData, handleStockData } from '../handlers/stock.handler';
+import { handleDividendsData } from '../handlers/dividend.handler';
+import { handleBalanceSheetsData } from '../handlers/balanceSheet.handler';
+import { handlePriceHistoryData } from '../handlers/price.handler';
 
 @Processor('register')
-export class TasksProcessor {
+export class TasksRegisterProcessor {
     constructor(
         @Inject(StockDrizzleRepository) private readonly stockRepository: StockRepository,
         @Inject(CompanyDrizzleRepository) private readonly companyRepository: CompanyRepository,
@@ -30,13 +30,10 @@ export class TasksProcessor {
         private readonly httpService: HttpService,
     ) { }
 
-    private readonly logger = new Logger(TasksProcessor.name);
+    private readonly logger = new Logger(TasksRegisterProcessor.name);
 
     private makeBatchRequests(urls: string[]): Observable<any[]> {
         const requests: Observable<any>[] = [];
-
-        // Optional: Construct batch request payload if needed
-        // const payload = { requests: urls.map((url) => ({ url })) };
 
         urls.forEach((url) => {
             requests.push(
@@ -74,10 +71,6 @@ export class TasksProcessor {
             existingStock = await this.stockRepository.create(handleStockData(stockData, existingCompany.id));
         }
 
-        // registers dividends
-        const dividends = handleDividendsData(stockData, existingStock.id);
-        if (dividends) await this.dividendRepository.createMultiple(dividends);
-
         const result = await lastValueFrom(this.makeBatchRequests([
             `${process.env.SCRAPER_BASE_URL}/api/balancos/balancoresultados/chart/${existingCompany.externalId}/10/quarterly/`,
             `${process.env.SCRAPER_BASE_URL}/api/balancos/balancopatrimonial/chart/${existingCompany.externalId}/false/`,
@@ -95,6 +88,10 @@ export class TasksProcessor {
         // registers past prices
         const prices = handlePriceHistoryData(existingStock.id, result[2]);
         if (prices) await this.priceRepository.createMultiple(prices);
+
+        // registers dividends
+        const dividends = handleDividendsData(stockData, existingStock.id);
+        if (dividends) await this.dividendRepository.createMultiple(dividends);
 
         this.logger.debug(`${stockData['ticker']} registration completed`);
     }
