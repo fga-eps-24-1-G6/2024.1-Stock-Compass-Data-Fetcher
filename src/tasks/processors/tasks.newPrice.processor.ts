@@ -21,7 +21,7 @@ export class TasksNewPriceProcessor {
     async handleFetchNewPrices(job: Job) {
         const stock = job.data;
 
-        this.logger.debug(`Start fetching ${stock.ticker}...`);
+        this.logger.debug(`Start fetching price of ${stock.ticker}...`);
 
         const url = `${process.env.SCRAPER_BASE_URL}/api/cotacao/ticker/${stock['externalid']}`
 
@@ -35,7 +35,7 @@ export class TasksNewPriceProcessor {
 
         const priceData = await lastValueFrom(response);
         if(!priceData){
-            this.logger.warn(`Stock ${stock.ticker} fetch returned null`);
+            this.logger.warn(`Stock ${stock.ticker} price fetch returned null`);
             return;
         }
 

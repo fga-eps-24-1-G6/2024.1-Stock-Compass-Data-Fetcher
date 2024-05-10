@@ -13,7 +13,6 @@ import { StockDrizzleRepository } from "src/stocks/repositories/stock.drizzle.re
 import { StockRepository } from "src/stocks/repositories/stock.repository";
 import { InjectQueue } from "@nestjs/bull";
 import { Queue } from "bull";
-import { handleNewDividends } from "./handlers/dividend.handler";
 
 @Injectable()
 export class TasksService {
@@ -79,5 +78,12 @@ export class TasksService {
             await this.newPriceQueue.add(stock);
             this.logger.debug(`Enqued ${stock.ticker}`);
         }
+    }
+
+    //@Cron(CronExpression.EVERY_DAY_AT_6AM)
+    async fetchNewDividends() {
+        this.logger.debug('Fetching new dividends');
+        const stocks = await this.dividendRepository.findAllGroupedByStock();
+        await this.newDividendsQueue.add(stocks);
     }
 }

@@ -10,6 +10,7 @@ import { HttpModule } from '@nestjs/axios';
 import { BullModule } from '@nestjs/bull';
 import { TasksRegisterProcessor } from './processors/tasks.register.processor';
 import { TasksNewPriceProcessor } from './processors/tasks.newPrice.processor';
+import { TasksNewDividendsProcessor } from './processors/tasks.newDividends.processor';
 
 @Module({
     imports: [
@@ -22,9 +23,10 @@ import { TasksNewPriceProcessor } from './processors/tasks.newPrice.processor';
         BullModule.registerQueue(
             { name: 'register' },
             { name: 'new_price' },
+            { name: 'new_dividends' },
         ),
     ],
     controllers: [TasksController],
-    providers: [TasksService, TasksRegisterProcessor, TasksNewPriceProcessor],
+    providers: [TasksService, TasksRegisterProcessor, TasksNewPriceProcessor, TasksNewDividendsProcessor],
 })
 export class TasksModule { }

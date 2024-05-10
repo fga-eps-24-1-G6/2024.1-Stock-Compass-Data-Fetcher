@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DividendRepository } from './dividend.repository';
 import { dividends } from '../../db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, max, sql } from 'drizzle-orm';
 import { Dividend } from '../dividend.interface';
 import { DrizzleAsyncProvider } from 'src/drizzle/drizzel.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
@@ -33,6 +33,58 @@ export class DividendDrizzleRepository implements DividendRepository {
                 paymentDate: new Date(item.paymentDate)
             }
         )) as Dividend[];
+    }
+
+    private groupByStock(data: {
+        stockId: number;
+        ticker: string;
+        dividendValue: string;
+        dividendType: string;
+        dividendPaymentDate: string;
+    }[]) {
+        const result = [];
+
+        data.forEach((item) => {
+            const existingStock = result.find((stock) => stock.stockId === item.stockId);
+
+            if (existingStock) {
+                existingStock.dividends.push({
+                    value: item.dividendValue,
+                    date: item.dividendPaymentDate,
+                    type: item.dividendType
+                });
+            } else {
+                let dividends = [];
+                if (item.dividendValue && item.dividendPaymentDate && item.dividendType) {
+                    dividends.push({
+                        value: item.dividendValue,
+                        date: item.dividendPaymentDate,
+                        type: item.dividendType
+                    })
+                }
+
+                result.push({
+                    stockId: item.stockId,
+                    ticker: item.ticker,
+                    dividends,
+                });
+            }
+        });
+
+        return result;
+    }
+
+
+    async findAllGroupedByStock(): Promise<any[] | undefined> {
+        const result = await this.db.select({
+            stockId: schema.stocks.id,
+            ticker: schema.stocks.ticker,
+            dividendValue: dividends.value,
+            dividendType: dividends.type,
+            dividendPaymentDate: dividends.paymentDate,
+        }).from(dividends).rightJoin(schema.stocks, eq(dividends.stockId, schema.stocks.id));
+
+        return this.groupByStock(result);
     }
 
     async findByStock(stockId: number): Promise<Dividend[] | undefined> {

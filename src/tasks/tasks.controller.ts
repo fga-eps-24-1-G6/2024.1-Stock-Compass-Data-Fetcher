@@ -9,4 +9,14 @@ export class TasksController {
   populate() {
     this.tasksService.populate();
   }
+
+  @Get('dividends')
+  fetchNewDividends() {
+    return this.tasksService.fetchNewDividends();
+  }
+
+  @Get('prices')
+  fetchNewPrices() {
+    this.tasksService.fetchNewPrices();
+  }
 }
