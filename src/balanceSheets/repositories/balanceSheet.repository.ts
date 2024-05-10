@@ -4,6 +4,7 @@ import { BalanceSheet } from "../balanceSheet.interface";
 export interface BalanceSheetRepository {
     findOne(id: number): Promise<BalanceSheet | undefined>;
     findAll(): Promise<BalanceSheet[]>;
+    findAllGroupedByCompany(): Promise<any[] | undefined>;
     findByCompany(comapanyId: number): Promise<BalanceSheet[]>;
     create(createBalanceSheetDto: CreateBalanceSheetDto): Promise<BalanceSheet>;
     createMultiple(createBalanceSheetDto: CreateBalanceSheetDto[]): Promise<BalanceSheet[]>;

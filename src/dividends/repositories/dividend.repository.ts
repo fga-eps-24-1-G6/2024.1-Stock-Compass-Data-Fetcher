@@ -4,6 +4,7 @@ import { Dividend } from "../dividend.interface";
 export interface DividendRepository {
     findOne(id: number): Promise<Dividend | undefined>;
     findAll(): Promise<Dividend[]>;
+    findAllGroupedByStock(): Promise<any[] | undefined>;
     create(createDividendDto: CreateDividendDto): Promise<Dividend>;
     createMultiple(createDividendDto: CreateDividendDto[]): Promise<Dividend[]>;
     update(id: number, updateDividendDto: UpdateDividendDto): Promise<Dividend>;

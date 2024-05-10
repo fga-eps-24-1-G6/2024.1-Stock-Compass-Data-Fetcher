@@ -107,3 +107,43 @@ export function handleBalanceSheetsData({ companyId, baseData, assetsAndLiabilit
     }
     return balanceSheets;
 }
+
+function laterThan(
+    a: { year: number, quarter: number },
+    b: { year: number, quarter: number }
+) {
+    if (a.year === b.year)
+        return a.quarter > b.quarter;
+
+    return a.year > b.year;
+}
+
+export function handleFetchNewBalanceSheets(data: any, latestSheet: any, companyId: number): { newBalanceSheets: CreateBalanceSheetDto[], error: string } {
+    try {
+        const resultsBySymbol = extractSheetData(data);
+
+        const newBalanceSheets = [];
+        let i = 0;
+        while (laterThan(resultsBySymbol['#'][i], latestSheet)) {
+            newBalanceSheets[i] = {
+                ...resultsBySymbol['#'][i],
+                netRevenue: resultsBySymbol['Receita Líquida - (R$)'][i],
+                costs: resultsBySymbol['Custos - (R$)'][i],
+                grossProfit: resultsBySymbol['Lucro Bruto - (R$)'][i],
+                netProfit: resultsBySymbol['Lucro Líquido - (R$)'][i],
+                ebitda: resultsBySymbol['EBITDA - (R$)'][i],
+                ebit: resultsBySymbol['EBIT - (R$)'][i],
+                taxes: resultsBySymbol['Imposto - (R$)'][i],
+                grossDebt: resultsBySymbol['Dívida Bruta - (R$)'][i],
+                netDebt: resultsBySymbol['Dívida Líquida - (R$)'][i],
+                companyId
+            }
+
+            i++;
+        }
+
+        return { newBalanceSheets, error: null };
+    } catch (error) {
+        return { newBalanceSheets: [], error: error.message };
+    }
+}

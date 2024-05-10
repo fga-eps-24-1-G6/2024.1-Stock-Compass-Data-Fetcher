@@ -1,5 +1,16 @@
 FROM node:18-alpine AS builder
 
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont
+
 WORKDIR /app
 COPY ["package.json", "yarn.lock", "./"]
 

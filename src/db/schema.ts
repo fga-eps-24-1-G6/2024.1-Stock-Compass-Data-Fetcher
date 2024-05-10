@@ -1,4 +1,4 @@
-import { bigint, date, decimal, index, integer, numeric, pgTable, serial, varchar } from 'drizzle-orm/pg-core';
+import { bigint, date, decimal, index, integer, numeric, pgTable, serial, unique, varchar } from 'drizzle-orm/pg-core';
 
 export const companies = pgTable('companies', {
     id: serial('id').primaryKey(),
@@ -66,10 +66,11 @@ export const balanceSheets = pgTable('balance_sheets', {
     cash: bigint('cash', { mode: 'number' }),
     assets: bigint('assets', { mode: 'number' }),
     liabilities: bigint('liabilities', { mode: 'number' })
-}, (balanceSheets) => {
+}, (balanceSheet) => {
     return {
-        companyIdx: index("balance_sheets_company_idx").on(balanceSheets.companyId),
-        yearIdx: index("balance_sheets_year_idx").on(balanceSheets.year),
+        companyIdx: index("balance_sheets_company_idx").on(balanceSheet.companyId),
+        yearIdx: index("balance_sheets_year_idx").on(balanceSheet.year),
+        periodUnq: unique().on(balanceSheet.year, balanceSheet.quarter)
     };
 });
 

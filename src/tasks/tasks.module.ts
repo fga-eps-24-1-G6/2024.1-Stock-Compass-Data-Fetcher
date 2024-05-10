@@ -8,7 +8,10 @@ import { DividendModule } from 'src/dividends/dividends.module';
 import { PriceModule } from 'src/prices/prices.module';
 import { HttpModule } from '@nestjs/axios';
 import { BullModule } from '@nestjs/bull';
-import { TasksProcessor } from './tasks.processor';
+import { TasksRegisterProcessor } from './processors/tasks.register.processor';
+import { TasksNewPriceProcessor } from './processors/tasks.newPrice.processor';
+import { TasksNewDividendsProcessor } from './processors/tasks.newDividends.processor';
+import { TasksNewBalanceSheetsProcessor } from './processors/tasks.newBalanceSheets.processor';
 
 @Module({
     imports: [
@@ -18,11 +21,20 @@ import { TasksProcessor } from './tasks.processor';
         DividendModule,
         BalanceSheetModule,
         HttpModule,
-        BullModule.registerQueue({
-            name: 'register',
-        }),
+        BullModule.registerQueue(
+            { name: 'register' },
+            { name: 'new_price' },
+            { name: 'new_dividends' },
+            { name: 'new_balance_sheets' }
+        ),
     ],
     controllers: [TasksController],
-    providers: [TasksService, TasksProcessor],
+    providers: [
+        TasksService,
+        TasksRegisterProcessor,
+        TasksNewPriceProcessor,
+        TasksNewDividendsProcessor,
+        TasksNewBalanceSheetsProcessor
+    ],
 })
 export class TasksModule { }

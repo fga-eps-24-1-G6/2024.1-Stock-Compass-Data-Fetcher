@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PriceRepository } from './price.repository';
 import { prices } from '../../db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, max, sql } from 'drizzle-orm';
 import { Price } from '../price.interface';
 import { DrizzleAsyncProvider } from 'src/drizzle/drizzel.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
@@ -31,6 +31,13 @@ export class PriceDrizzleRepository implements PriceRepository {
                 priceDate: new Date(item.priceDate)
             }
         )) as Price[];
+    }
+
+    async findLatest(): Promise<any[] | undefined> {
+        const statement = sql`select ${schema.stocks.id} as stockId,${schema.stocks.externalId} as externalId,${schema.stocks.ticker},${max(prices.priceDate)} as latestDate from ${prices} join ${schema.stocks} on ${schema.stocks.id} = ${prices.stockId} group by ${schema.stocks.id}`;
+        const result = await this.db.execute(statement);
+
+        return result.rows;
     }
 
     async findByStock(stockId: number): Promise<Price[] | undefined> {
