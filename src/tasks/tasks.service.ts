@@ -25,6 +25,7 @@ export class TasksService {
         @InjectQueue('register') private readonly registerQueue: Queue,
         @InjectQueue('new_price') private readonly newPriceQueue: Queue,
         @InjectQueue('new_dividends') private readonly newDividendsQueue: Queue,
+        @InjectQueue('new_balance_sheets') private readonly newBalanceSheetsQueue: Queue,
     ) { }
 
     private readonly logger = new Logger(TasksService.name);
@@ -85,5 +86,16 @@ export class TasksService {
         this.logger.debug('Fetching new dividends');
         const stocks = await this.dividendRepository.findAllGroupedByStock();
         await this.newDividendsQueue.add(stocks);
+    }
+
+    // @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_NOON)
+    async fetchNewBalanceSheets() {
+        this.logger.debug('Fetching new balance sheets');
+        const companies = await this.balanceSheetRepository.findAllGroupedByCompany();
+
+        for (const company of companies) {
+            await this.newBalanceSheetsQueue.add(company);
+            this.logger.debug(`Enqued ${company.name}`);
+        }
     }
 }

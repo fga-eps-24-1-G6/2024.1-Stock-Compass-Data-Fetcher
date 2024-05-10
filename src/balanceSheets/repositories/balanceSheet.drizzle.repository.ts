@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { BalanceSheetRepository } from './balanceSheet.repository';
 import { balanceSheets } from '../../db/schema';
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { BalanceSheet } from '../balanceSheet.interface';
 import { DrizzleAsyncProvider } from 'src/drizzle/drizzel.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
@@ -21,6 +21,42 @@ export class BalanceSheetDrizzleRepository implements BalanceSheetRepository {
     async findAll(): Promise<BalanceSheet[] | undefined> {
         const result = await this.db.select().from(balanceSheets);
         return result as BalanceSheet[];
+    }
+
+    private groupByCompany(data: {
+        companyId: number;
+        externalId: string;
+        name: string;
+        balanceSheetYear: number;
+        balanceSheetQuarter: number;
+    }[]) {
+        const result = [];
+
+        data.forEach((item) => {
+            const existingCompany = result.find((company) => company.companyId === item.companyId);
+
+            if (!existingCompany) {
+                if (item.balanceSheetYear && item.balanceSheetQuarter)
+                    result.push(item);
+            }
+        });
+
+        return result;
+    }
+
+
+    async findAllGroupedByCompany(): Promise<any[] | undefined> {
+        const result = await this.db.select({
+            companyId: schema.companies.id,
+            externalId: schema.companies.externalId,
+            name: schema.companies.name,
+            balanceSheetYear: balanceSheets.year,
+            balanceSheetQuarter: balanceSheets.quarter,
+        }).from(balanceSheets)
+            .rightJoin(schema.companies, eq(balanceSheets.companyId, schema.companies.id))
+            .orderBy(schema.companies.id, desc(balanceSheets.year), desc(balanceSheets.quarter));
+
+        return this.groupByCompany(result);
     }
 
     async findByCompany(companyId: number): Promise<BalanceSheet[] | undefined> {

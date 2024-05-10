@@ -19,4 +19,9 @@ export class TasksController {
   fetchNewPrices() {
     this.tasksService.fetchNewPrices();
   }
+
+  @Get('balance_sheets')
+  fetchNewBalanceSheets() {
+    this.tasksService.fetchNewBalanceSheets();
+  }
 }
