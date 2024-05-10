@@ -29,6 +29,7 @@ export class TasksService {
     ) { }
 
     private readonly logger = new Logger(TasksService.name);
+    private readonly fetchingEnabled = process.env.FETCHING_UPDATES_ENABLED || false;
 
     async populate() {
         try {
@@ -67,30 +68,36 @@ export class TasksService {
 
     @Cron(CronExpression.EVERY_DAY_AT_1AM)
     async fetchNewPrices() {
-        this.logger.debug('Fetching new prices');
-        const stocksWithPrices = await this.priceRepository.findLatest();
+        if (this.fetchingEnabled) {
+            this.logger.debug('Fetching new prices');
+            const stocksWithPrices = await this.priceRepository.findLatest();
 
-        for (const stock of stocksWithPrices) {
-            await this.newPriceQueue.add(stock);
-            this.logger.debug(`Enqued ${stock.ticker}`);
+            for (const stock of stocksWithPrices) {
+                await this.newPriceQueue.add(stock);
+                this.logger.debug(`Enqued ${stock.ticker}`);
+            }
         }
     }
 
     @Cron(CronExpression.EVERY_DAY_AT_6AM)
     async fetchNewDividends() {
-        this.logger.debug('Fetching new dividends');
-        const stocks = await this.dividendRepository.findAllGroupedByStock();
-        await this.newDividendsQueue.add(stocks);
+        if (this.fetchingEnabled) {
+            this.logger.debug('Fetching new dividends');
+            const stocks = await this.dividendRepository.findAllGroupedByStock();
+            await this.newDividendsQueue.add(stocks);
+        }
     }
 
     @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
     async fetchNewBalanceSheets() {
-        this.logger.debug('Fetching new balance sheets');
-        const companies = await this.balanceSheetRepository.findAllGroupedByCompany();
+        if (this.fetchingEnabled) {
+            this.logger.debug('Fetching new balance sheets');
+            const companies = await this.balanceSheetRepository.findAllGroupedByCompany();
 
-        for (const company of companies) {
-            await this.newBalanceSheetsQueue.add(company);
-            this.logger.debug(`Enqued ${company.name}`);
+            for (const company of companies) {
+                await this.newBalanceSheetsQueue.add(company);
+                this.logger.debug(`Enqued ${company.name}`);
+            }
         }
     }
 }
