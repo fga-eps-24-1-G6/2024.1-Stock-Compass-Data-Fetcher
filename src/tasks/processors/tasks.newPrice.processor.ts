@@ -55,6 +55,7 @@ export class TasksNewPriceProcessor {
 
         await this.priceRepository.create(newPrice);
 
+        this.logger.debug(`New price of ${stock.ticker} added successfully with value: ${newPrice}`);
         this.logger.debug(`${stock.ticker} fetching completed`);
     }
 }

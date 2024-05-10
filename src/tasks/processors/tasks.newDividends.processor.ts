@@ -107,7 +107,7 @@ export class TasksNewDividendsProcessor {
 
                 if (dividendHistory) {
                     const newStockDividends = dividendHistory.filter(dividend => {
-                        if(!dividend.value || !dividend.paymentDate || !dividend.ownershipDate) return false;
+                        if (!dividend.value || !dividend.paymentDate || !dividend.ownershipDate) return false;
                         if (!stock.dividends.length) return true;
 
                         return !stock.dividends.some((e: { value: string, date: string, type: string }) =>
@@ -119,7 +119,7 @@ export class TasksNewDividendsProcessor {
 
                     if (newStockDividends.length > 0) {
                         newDividends.push(...newStockDividends);
-                        this.logger.debug('New dividends of ' + stock.ticker + ' added successfully');
+                        this.logger.debug(`New dividends of ${stock.ticker} added successfully with values: ${newStockDividends}`);
                     } else this.logger.debug('Found no new dividends of ' + stock.ticker);
                 }
                 else this.logger.debug('Could not find data from stock ' + stock.ticker)
@@ -136,10 +136,9 @@ export class TasksNewDividendsProcessor {
         await cluster.idle();
         await cluster.close();
 
-        console.log(newDividends);
-        // if (newDividends.length > 0) {
-        //     this.dividendRepository.createMultiple(newDividends);
-        // }
+        if (newDividends.length > 0) {
+            this.dividendRepository.createMultiple(newDividends);
+        }
 
         this.logger.debug('Finished scraping new dividends!');
     }

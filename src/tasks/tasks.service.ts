@@ -65,14 +65,9 @@ export class TasksService {
         }
     }
 
-    //@Cron(CronExpression.EVERY_DAY_AT_1AM)
+    @Cron(CronExpression.EVERY_DAY_AT_1AM)
     async fetchNewPrices() {
         this.logger.debug('Fetching new prices');
-        // get stock tickers
-        // queu stocks
-        //      get new price
-        //      check if there is price with new date exists
-        //      if not => create new price
         const stocksWithPrices = await this.priceRepository.findLatest();
 
         for (const stock of stocksWithPrices) {
@@ -81,14 +76,14 @@ export class TasksService {
         }
     }
 
-    //@Cron(CronExpression.EVERY_DAY_AT_6AM)
+    @Cron(CronExpression.EVERY_DAY_AT_6AM)
     async fetchNewDividends() {
         this.logger.debug('Fetching new dividends');
         const stocks = await this.dividendRepository.findAllGroupedByStock();
         await this.newDividendsQueue.add(stocks);
     }
 
-    // @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_NOON)
+    @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
     async fetchNewBalanceSheets() {
         this.logger.debug('Fetching new balance sheets');
         const companies = await this.balanceSheetRepository.findAllGroupedByCompany();

@@ -11,6 +11,7 @@ import { BullModule } from '@nestjs/bull';
 import { TasksRegisterProcessor } from './processors/tasks.register.processor';
 import { TasksNewPriceProcessor } from './processors/tasks.newPrice.processor';
 import { TasksNewDividendsProcessor } from './processors/tasks.newDividends.processor';
+import { TasksNewBalanceSheetsProcessor } from './processors/tasks.newBalanceSheets.processor';
 
 @Module({
     imports: [
@@ -24,9 +25,16 @@ import { TasksNewDividendsProcessor } from './processors/tasks.newDividends.proc
             { name: 'register' },
             { name: 'new_price' },
             { name: 'new_dividends' },
+            { name: 'new_balance_sheets' }
         ),
     ],
     controllers: [TasksController],
-    providers: [TasksService, TasksRegisterProcessor, TasksNewPriceProcessor, TasksNewDividendsProcessor],
+    providers: [
+        TasksService,
+        TasksRegisterProcessor,
+        TasksNewPriceProcessor,
+        TasksNewDividendsProcessor,
+        TasksNewBalanceSheetsProcessor
+    ],
 })
 export class TasksModule { }
