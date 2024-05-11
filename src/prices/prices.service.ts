@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { PriceRepository } from './repositories/price.repository';
 import { Price } from './price.interface';
 import { PriceDrizzleRepository } from './repositories/price.drizzle.repository';
-import { CreatePriceDto, UpdatePriceDto } from './prices.dtos';
+import { CreatePriceDto, GetPriceDto, UpdatePriceDto } from './prices.dtos';
 
 @Injectable()
 export class PricesService {
@@ -10,16 +10,31 @@ export class PricesService {
         @Inject(PriceDrizzleRepository) private readonly priceRepository: PriceRepository
     ) { }
 
-    async getPrice(id: string): Promise<Price | undefined> {
-        return await this.priceRepository.findOne(parseInt(id));
+    async getPrice(id: string): Promise<GetPriceDto | undefined> {
+        const price = await this.priceRepository.findOne(parseInt(id));
+        return {
+            stockId: price.stockId,
+            value: price.value,
+            priceDate: price.priceDate
+        }
     }
 
-    async getAllPrices(): Promise<Price[] | undefined> {
-        return await this.priceRepository.findAll();
+    async getAllPrices(): Promise<GetPriceDto[] | undefined> {
+        const prices = await this.priceRepository.findAll();
+        return prices.map(price => ({
+            stockId: price.stockId,
+            value: price.value,
+            priceDate: price.priceDate
+        }))
     }
 
-    async getStockPrices(id: string): Promise<Price[] | undefined> {
-        return await this.priceRepository.findByStock(parseInt(id));
+    async getStockPrices(id: string): Promise<GetPriceDto[] | undefined> {
+        const prices = await this.priceRepository.findByStock(parseInt(id));
+        return prices.map(price => ({
+            stockId: price.stockId,
+            value: price.value,
+            priceDate: price.priceDate
+        }))
     }
 
     async createPrice(createPriceDto: CreatePriceDto): Promise<Price | undefined> {

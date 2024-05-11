@@ -14,3 +14,11 @@ export interface UpdateStockDto {
     tagAlong?: string,
     avgDailyLiquidity?: number
 };
+
+export interface GetStockDto {
+    ticker: string,
+    freeFloat?: string,
+    tagAlong?: string,
+    avgDailyLiquidity?: number,
+    companyId: number
+};
