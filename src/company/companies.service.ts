@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CompanyRepository } from './repositories/company.repository';
 import { Company } from './company.interface';
 import { CompanyDrizzleRepository } from './repositories/company.drizzle.repository';
-import { CreateCompanyDto, UpdateCompanyDto } from './companies.dtos';
+import { CreateCompanyDto, GetCompanyDto, UpdateCompanyDto } from './companies.dtos';
 
 @Injectable()
 export class CompaniesService {
@@ -10,12 +10,34 @@ export class CompaniesService {
         @Inject(CompanyDrizzleRepository) private readonly companyRepository: CompanyRepository
     ) { }
 
-    async getCompany(id: string): Promise<Company | undefined> {
-        return await this.companyRepository.findOne(parseInt(id));
+    async getCompany(id: string): Promise<GetCompanyDto | undefined> {
+        const company = await this.companyRepository.findOne(parseInt(id));
+        return {
+            name: company.name,
+            cnpj: company.cnpj,
+            ipo: company.ipo,
+            foundationYear: company.foundationYear,
+            firmValue: company.firmValue,
+            numberOfPapers: company.numberOfPapers,
+            marketSegment: company.marketSegment,
+            sector: company.sector,
+            segment: company.segment
+        }
     }
 
-    async getAllCompanies(): Promise<Company[] | undefined> {
-        return await this.companyRepository.findAll();
+    async getAllCompanies(): Promise<GetCompanyDto[] | undefined> {
+        const companies = await this.companyRepository.findAll();
+        return companies.map(company => ({
+            name: company.name,
+            cnpj: company.cnpj,
+            ipo: company.ipo,
+            foundationYear: company.foundationYear,
+            firmValue: company.firmValue,
+            numberOfPapers: company.numberOfPapers,
+            marketSegment: company.marketSegment,
+            sector: company.sector,
+            segment: company.segment
+        }))
     }
 
     async createCompany(createCompanyDto: CreateCompanyDto): Promise<Company | undefined> {
