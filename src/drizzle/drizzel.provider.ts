@@ -41,7 +41,7 @@ export const connectDB = async () => {
     }
 }
 
-export const DrizzleAsyncProvider = "drizzel_provider"
+export const DrizzleAsyncProvider = "DrizzelProvider"
 
 export const drizzleProvider = [
     {

@@ -3,7 +3,6 @@ import { StockRepository } from './stock.repository';
 import { stocks } from '../../db/schema';
 import { eq } from 'drizzle-orm';
 import { Stock } from '../stock.interface';
-import { DrizzleAsyncProvider } from 'src/drizzle/drizzel.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import * as schema from "../../db/schema";
@@ -11,7 +10,7 @@ import { CreateStockDto, UpdateStockDto } from '../stocks.dtos';
 
 @Injectable()
 export class StockDrizzleRepository implements StockRepository {
-    constructor(@Inject(DrizzleAsyncProvider) private db: NeonHttpDatabase<typeof schema> | NodePgDatabase<typeof schema>) { }
+    constructor(@Inject('DrizzelProvider') private db: NeonHttpDatabase<typeof schema> | NodePgDatabase<typeof schema>) { }
 
     async findOne(id: number): Promise<Stock | undefined> {
         const result = await this.db.select().from(stocks).where(eq(stocks.id, id));

@@ -3,7 +3,6 @@ import { BalanceSheetRepository } from './balanceSheet.repository';
 import { balanceSheets } from '../../db/schema';
 import { desc, eq } from 'drizzle-orm';
 import { BalanceSheet } from '../balanceSheet.interface';
-import { DrizzleAsyncProvider } from 'src/drizzle/drizzel.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import * as schema from "../../db/schema";
@@ -11,7 +10,7 @@ import { CreateBalanceSheetDto, UpdateBalanceSheetDto } from '../balanceSheets.d
 
 @Injectable()
 export class BalanceSheetDrizzleRepository implements BalanceSheetRepository {
-    constructor(@Inject(DrizzleAsyncProvider) private db: NeonHttpDatabase<typeof schema> | NodePgDatabase<typeof schema>) { }
+    constructor(@Inject('DrizzelProvider') private db: NeonHttpDatabase<typeof schema> | NodePgDatabase<typeof schema>) { }
 
     async findOne(id: number): Promise<BalanceSheet | undefined> {
         const result = await this.db.select().from(balanceSheets).where(eq(balanceSheets.id, id));

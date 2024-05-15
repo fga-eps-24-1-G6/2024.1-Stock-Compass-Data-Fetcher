@@ -3,7 +3,6 @@ import { PriceRepository } from './price.repository';
 import { prices } from '../../db/schema';
 import { eq, max, sql } from 'drizzle-orm';
 import { Price } from '../price.interface';
-import { DrizzleAsyncProvider } from 'src/drizzle/drizzel.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import * as schema from "../../db/schema";
@@ -11,7 +10,7 @@ import { CreatePriceDto, UpdatePriceDto } from '../prices.dtos';
 
 @Injectable()
 export class PriceDrizzleRepository implements PriceRepository {
-    constructor(@Inject(DrizzleAsyncProvider) private db: NeonHttpDatabase<typeof schema> | NodePgDatabase<typeof schema>) { }
+    constructor(@Inject('DrizzelProvider') private db: NeonHttpDatabase<typeof schema> | NodePgDatabase<typeof schema>) { }
 
     async findOne(id: number): Promise<Price | undefined> {
         const result = await this.db.select().from(prices).where(eq(prices.id, id));

@@ -3,7 +3,6 @@ import { CompanyRepository } from './company.repository';
 import { companies } from '../../db/schema';
 import { eq } from 'drizzle-orm';
 import { Company } from '../company.interface';
-import { DrizzleAsyncProvider } from 'src/drizzle/drizzel.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import * as schema from "../../db/schema";
@@ -11,7 +10,7 @@ import { CreateCompanyDto, UpdateCompanyDto } from '../companies.dtos';
 
 @Injectable()
 export class CompanyDrizzleRepository implements CompanyRepository {
-    constructor(@Inject(DrizzleAsyncProvider) private db: NeonHttpDatabase<typeof schema> | NodePgDatabase<typeof schema>) { }
+    constructor(@Inject('DrizzelProvider') private db: NeonHttpDatabase<typeof schema> | NodePgDatabase<typeof schema>) { }
 
     async findOne(id: number): Promise<Company | undefined> {
         const result = await this.db.select().from(companies).where(eq(companies.id, id));
