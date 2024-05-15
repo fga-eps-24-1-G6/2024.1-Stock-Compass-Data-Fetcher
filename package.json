@@ -80,7 +80,14 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.(t|j)s",
+      "!**/*.module.(t|j)s",
+      "!**/main.ts",
+      "!**/drizzle/**",
+      "!**/db/**",
+      "!**/utils/**",
+      "!**/scripts/**",
+      "!**/tasks/**"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
