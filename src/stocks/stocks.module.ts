@@ -7,7 +7,16 @@ import { StockDrizzleRepository } from "./repositories/stock.drizzle.repository"
 @Module({
     imports: [DrizzleModule],
     controllers: [StocksController],
-    providers: [StocksService, StockDrizzleRepository],
-    exports: [StockDrizzleRepository]
+    providers: [
+        StocksService,
+        {
+            provide: 'StockRepository',
+            useClass: StockDrizzleRepository,
+        },
+    ],
+    exports: [{
+        provide: 'StockRepository',
+        useClass: StockDrizzleRepository,
+    },]
 })
 export class StockModule { }

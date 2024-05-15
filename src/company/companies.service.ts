@@ -1,13 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CompanyRepository } from './repositories/company.repository';
 import { Company } from './company.interface';
-import { CompanyDrizzleRepository } from './repositories/company.drizzle.repository';
 import { CreateCompanyDto, GetCompanyDto, UpdateCompanyDto } from './companies.dtos';
 
 @Injectable()
 export class CompaniesService {
     constructor(
-        @Inject(CompanyDrizzleRepository) private readonly companyRepository: CompanyRepository
+        @Inject('CompanyRepository') private readonly companyRepository
     ) { }
 
     async getCompany(id: string): Promise<GetCompanyDto | undefined> {

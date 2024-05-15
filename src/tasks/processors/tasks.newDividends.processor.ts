@@ -5,7 +5,6 @@ import { Page } from 'puppeteer';
 import { Cluster } from 'puppeteer-cluster';
 import { formatDate } from 'src/utils/formatter';
 import { DividendRepository } from 'src/dividends/repositories/dividend.repository';
-import { DividendDrizzleRepository } from 'src/dividends/repositories/dividend.drizzle.repository';
 require('dotenv').config();
 
 const baseURL = process.env.SCRAPER_BASE_URL;
@@ -13,7 +12,7 @@ const baseURL = process.env.SCRAPER_BASE_URL;
 @Processor('new_dividends')
 export class TasksNewDividendsProcessor {
     constructor(
-        @Inject(DividendDrizzleRepository) private readonly dividendRepository: DividendRepository,
+        @Inject('DividendRepository') private readonly dividendRepository: DividendRepository,
     ) { }
 
     private readonly logger = new Logger(TasksNewDividendsProcessor.name);

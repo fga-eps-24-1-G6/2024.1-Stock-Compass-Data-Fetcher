@@ -1,15 +1,10 @@
 import fs from "fs";
 import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { BalanceSheetDrizzleRepository } from "src/balanceSheets/repositories/balanceSheet.drizzle.repository";
 import { BalanceSheetRepository } from "src/balanceSheets/repositories/balanceSheet.repository";
-import { CompanyDrizzleRepository } from "src/company/repositories/company.drizzle.repository";
 import { CompanyRepository } from "src/company/repositories/company.repository";
-import { DividendDrizzleRepository } from "src/dividends/repositories/dividend.drizzle.repository";
 import { DividendRepository } from "src/dividends/repositories/dividend.repository";
-import { PriceDrizzleRepository } from "src/prices/repositories/price.drizzle.repository";
 import { PriceRepository } from "src/prices/repositories/price.repository";
-import { StockDrizzleRepository } from "src/stocks/repositories/stock.drizzle.repository";
 import { StockRepository } from "src/stocks/repositories/stock.repository";
 import { InjectQueue } from "@nestjs/bull";
 import { Queue } from "bull";
@@ -17,11 +12,11 @@ import { Queue } from "bull";
 @Injectable()
 export class TasksService {
     constructor(
-        @Inject(StockDrizzleRepository) private readonly stockRepository: StockRepository,
-        @Inject(CompanyDrizzleRepository) private readonly companyRepository: CompanyRepository,
-        @Inject(DividendDrizzleRepository) private readonly dividendRepository: DividendRepository,
-        @Inject(PriceDrizzleRepository) private readonly priceRepository: PriceRepository,
-        @Inject(BalanceSheetDrizzleRepository) private readonly balanceSheetRepository: BalanceSheetRepository,
+        @Inject('StockRepository') private readonly stockRepository: StockRepository,
+        @Inject('CompanyRepository') private readonly companyRepository: CompanyRepository,
+        @Inject('DividendRepository') private readonly dividendRepository: DividendRepository,
+        @Inject('PriceRepository') private readonly priceRepository: PriceRepository,
+        @Inject('BalanceSheetRepository') private readonly balanceSheetRepository: BalanceSheetRepository,
         @InjectQueue('register') private readonly registerQueue: Queue,
         @InjectQueue('new_price') private readonly newPriceQueue: Queue,
         @InjectQueue('new_dividends') private readonly newDividendsQueue: Queue,

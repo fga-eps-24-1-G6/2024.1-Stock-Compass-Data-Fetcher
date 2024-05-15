@@ -1,13 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PriceRepository } from './repositories/price.repository';
 import { Price } from './price.interface';
-import { PriceDrizzleRepository } from './repositories/price.drizzle.repository';
 import { CreatePriceDto, GetPriceDto, UpdatePriceDto } from './prices.dtos';
 
 @Injectable()
 export class PricesService {
     constructor(
-        @Inject(PriceDrizzleRepository) private readonly priceRepository: PriceRepository
+        @Inject('PriceRepository') private readonly priceRepository: PriceRepository
     ) { }
 
     async getPrice(id: string): Promise<GetPriceDto | undefined> {

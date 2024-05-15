@@ -5,13 +5,12 @@ import { catchError, map } from "rxjs/operators";
 import { lastValueFrom } from "rxjs";
 import { HttpService } from '@nestjs/axios';
 import { BalanceSheetRepository } from 'src/balanceSheets/repositories/balanceSheet.repository';
-import { BalanceSheetDrizzleRepository } from 'src/balanceSheets/repositories/balanceSheet.drizzle.repository';
 import { handleFetchNewBalanceSheets } from '../handlers/balanceSheet.handler';
 
 @Processor('new_balance_sheets')
 export class TasksNewBalanceSheetsProcessor {
     constructor(
-        @Inject(BalanceSheetDrizzleRepository) private readonly balanceSheetRepository: BalanceSheetRepository,
+        @Inject('BalanceSheetRepository') private readonly balanceSheetRepository: BalanceSheetRepository,
         private readonly httpService: HttpService,
     ) { }
 

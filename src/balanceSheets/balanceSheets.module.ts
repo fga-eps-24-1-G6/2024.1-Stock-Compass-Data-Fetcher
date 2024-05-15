@@ -7,7 +7,7 @@ import { BalanceSheetDrizzleRepository } from "./repositories/balanceSheet.drizz
 @Module({
     imports: [DrizzleModule],
     controllers: [BalanceSheetsController],
-    providers: [BalanceSheetsService, BalanceSheetDrizzleRepository],
-    exports: [BalanceSheetDrizzleRepository]
+    providers: [BalanceSheetsService, { provide: 'BalanceSheetRepository', useClass: BalanceSheetDrizzleRepository }],
+    exports: [{ provide: 'BalanceSheetRepository', useClass: BalanceSheetDrizzleRepository }]
 })
 export class BalanceSheetModule { }

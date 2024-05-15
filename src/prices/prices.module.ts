@@ -7,7 +7,7 @@ import { PriceDrizzleRepository } from "./repositories/price.drizzle.repository"
 @Module({
     imports: [DrizzleModule],
     controllers: [PricesController],
-    providers: [PricesService, PriceDrizzleRepository],
-    exports: [PriceDrizzleRepository]
+    providers: [PricesService, { provide: 'PriceRepository', useClass: PriceDrizzleRepository }],
+    exports: [{ provide: 'PriceRepository', useClass: PriceDrizzleRepository }]
 })
 export class PriceModule { }

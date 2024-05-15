@@ -1,14 +1,3 @@
-export interface Stock {
-    id: string,
-    externalId: string,
-    ticker: string,
-    companyId: string,
-    freeFloat: number,
-    tagAlong: number,
-    avgDailyLiquidity: number
-};
-
-
 export interface Company {
     id: number,
     externalId: string,
