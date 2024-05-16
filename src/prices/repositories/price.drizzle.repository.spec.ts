@@ -71,7 +71,9 @@ describe('PriceDrizzleRepository', () => {
                     priceDate: new Date('2023-05-06'),
                 }
             ];
-            dbMock.select.mockReturnValueOnce(prices); // Ajuste para retornar diretamente o array de preços
+            dbMock.select.mockReturnValueOnce({
+                from: jest.fn().mockReturnValueOnce(prices)
+            });
     
             const result = await repository.findAll();
             expect(result).toEqual(prices);
@@ -81,21 +83,27 @@ describe('PriceDrizzleRepository', () => {
     
     describe('findByStock', () => {
         it('should return a price by stock', async () => {
+            const stockId = 2;
             const prices: Price[] = [
                 {
                     id: 1,
-                    stockId: 2,
+                    stockId: stockId,
                     value: 16.004263214671,
                     priceDate: new Date('2023-05-06'),
                 }
             ];
-            dbMock.select.mockReturnValueOnce(prices); // Ajuste para retornar diretamente o array de preços
+            dbMock.select.mockReturnValueOnce({
+                from: jest.fn().mockReturnValueOnce({
+                    where: jest.fn().mockReturnValueOnce(prices)
+                })
+            });
     
-            const result = await repository.findByStock(2); 
-            expect(result).toEqual(prices[0]);
+            const result = await repository.findByStock(stockId);
+            expect(result).toEqual(prices);
             expect(dbMock.select).toHaveBeenCalled();
         });
     });
+    
 
     /* Fiquei um pouco confuso na hora do select porque nao consegui pensar em como fariamos juntando tabelas
     describe('findLatest', () => {
