@@ -15,7 +15,8 @@ describe('PricesController', () => {
 
     const mockPricesService = {
         getAllPrices: jest.fn().mockResolvedValue([priceDto]),
-        getStock: jest.fn().mockResolvedValue(priceDto),
+        getStockPrices: jest.fn().mockResolvedValue([priceDto]), // Adicionado mock para getStockPrices
+        getPrice: jest.fn().mockResolvedValue(priceDto),
     };
 
     beforeEach(async () => {
@@ -37,9 +38,16 @@ describe('PricesController', () => {
         expect(controller).toBeDefined();
     });
 
-    describe('getAllPrices', () => {
-        it('should return an array of prices DTOs', async () => {
-            const result = await controller.getAllPrices();
+    describe('getPrices', () => {
+        it('should return an array of prices DTOs when stockId is provided', async () => {
+            const stockId = '1'; // Definindo um stockId válido para o teste
+            const result = await controller.getPrices(stockId);
+            expect(result).toEqual([priceDto]);
+            expect(service.getStockPrices).toHaveBeenCalledWith(stockId);
+        });
+
+        it('should return an array of prices DTOs when stockId is not provided', async () => {
+            const result = await controller.getPrices(undefined); // Simulando que stockId não foi fornecido
             expect(result).toEqual([priceDto]);
             expect(service.getAllPrices).toHaveBeenCalled();
         });
