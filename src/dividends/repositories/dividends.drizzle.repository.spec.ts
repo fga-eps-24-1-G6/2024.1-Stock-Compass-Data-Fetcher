@@ -103,7 +103,7 @@ describe('DividendDrizzleRepository', () => {
 
       dbMock.insert.mockReturnValueOnce({
         values: jest.fn().mockReturnValueOnce({
-          returning: jest.fn().mockReturnValueOnce([dividendCreated])
+          returning: jest.fn().mockReturnValueOnce([dividendCreated]),
         }),
       });
 
@@ -113,6 +113,65 @@ describe('DividendDrizzleRepository', () => {
     });
   });
 
+  describe('createMultiple', () => {
+    it('should create multiple dividends', async () => {
+      const createDividendDto: CreateDividendDto[] = [
+        {
+          stockId: 1,
+          value: 5.0, // Alterado para uma string
+          ownershipDate: new Date('2023-05-06'),
+          paymentDate: new Date('2023-05-20'),
+        },
+      ];
+
+      const dividend = {
+        id: 1,
+        value: createDividendDto[0].value, // Convertido para string antes de parseFloat
+        ownershipDate: new Date(createDividendDto[0].ownershipDate),
+        paymentDate: new Date(createDividendDto[0].paymentDate),
+        stockId: createDividendDto[0].stockId,
+      } as Dividend;
+
+      dbMock.insert.mockReturnValueOnce({
+        values: jest.fn().mockReturnValueOnce({
+          returning: jest.fn().mockReturnValueOnce([dividend]),
+        }),
+      });
+
+      // Chame a função createMultiple com os dados de exemplo
+      const result = await repository.createMultiple(createDividendDto);
+
+      // Verifique se o resultado da função corresponde aos dividendos simulados
+      expect(result).toEqual([dividend]);
+
+      expect(dbMock.insert).toHaveBeenCalledWith(dividends);
+    });
+  });
+
+  describe('findByStock', () => {
+    it('should return a dividend by stock', async () => {
+      const stockId = 1;
+      const dividends: Dividend[] = [
+        {
+          stockId: 1,
+          value: 5.0, // Alterado para uma string
+          ownershipDate: new Date('2023-05-06'),
+          paymentDate: new Date('2023-05-20'),
+          id: 0,
+          type: '',
+        },
+      ];
+      dbMock.select.mockReturnValueOnce({
+        from: jest.fn().mockReturnValueOnce({
+          where: jest.fn().mockReturnValueOnce(dividends),
+        }),
+      });
+
+      const result = await repository.findByStock(stockId);
+      expect(result).toEqual(dividends);
+      expect(dbMock.select).toHaveBeenCalled();
+    });
+  });
 
   describe('update', () => {
     it('should update a dividend by id', async () => {
