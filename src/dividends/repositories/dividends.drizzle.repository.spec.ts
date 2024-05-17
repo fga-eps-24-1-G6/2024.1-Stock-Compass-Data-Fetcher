@@ -91,16 +91,28 @@ describe('DividendDrizzleRepository', () => {
         ownershipDate: new Date('2023-12-28'),
         paymentDate: new Date('2024-02-20'),
       };
-      const dividendCreated: Dividend = { id: 1, ...createDividendDto };
+
+      const dividendCreated: Dividend = {
+        id: 1,
+        stockId: 2,
+        type: 'JSCP',
+        value: 0.741,
+        ownershipDate: new Date('2023-12-28'),
+        paymentDate: new Date('2024-02-20'),
+      };
+
       dbMock.insert.mockReturnValueOnce({
-        values: jest.fn().mockReturnValueOnce([dividendCreated]),
+        values: jest.fn().mockReturnValueOnce({
+          returning: jest.fn().mockReturnValueOnce([dividendCreated])
+        }),
       });
+
       const result = await repository.create(createDividendDto);
       expect(result).toEqual(dividendCreated);
-      expect(dbMock.insert).toHaveBeenCalledWith({ ...createDividendDto, id: 1 }); // Corrigido aqui
+      expect(dbMock.insert).toHaveBeenCalledWith(dividends);
     });
   });
-  
+
 
   describe('update', () => {
     it('should update a dividend by id', async () => {
@@ -113,6 +125,7 @@ describe('DividendDrizzleRepository', () => {
         ownershipDate: new Date('2023-12-28'),
         paymentDate: new Date('2024-02-20'),
       };
+
       dbMock.update.mockReturnValueOnce({
         set: jest.fn().mockReturnValueOnce({
           where: jest.fn().mockReturnValueOnce({
@@ -123,7 +136,7 @@ describe('DividendDrizzleRepository', () => {
 
       const result = await repository.update(1, updateDividendDto);
       expect(result).toEqual(dividend);
-      expect(dbMock.update).toHaveBeenCalledWith(dividend);
+      expect(dbMock.update).toHaveBeenCalledWith(dividends);
     });
   });
 
