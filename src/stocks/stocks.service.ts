@@ -6,7 +6,7 @@ import { CreateStockDto, GetStockDto, UpdateStockDto } from './stocks.dtos';
 @Injectable()
 export class StocksService {
     constructor(
-        @Inject('StockRepository') private readonly stockRepository
+        @Inject('StockRepository') private readonly stockRepository: StockRepository
     ) { }
 
     async getStock(id: string): Promise<GetStockDto | undefined> {

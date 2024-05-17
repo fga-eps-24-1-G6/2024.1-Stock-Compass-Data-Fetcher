@@ -10,7 +10,7 @@ import { CreateBalanceSheetDto, UpdateBalanceSheetDto } from '../balanceSheets.d
 
 @Injectable()
 export class BalanceSheetDrizzleRepository implements BalanceSheetRepository {
-    constructor(@Inject('DrizzelProvider') private db: NeonHttpDatabase<typeof schema> | NodePgDatabase<typeof schema>) { }
+    constructor(@Inject('DrizzelProvider') private db: any) { }
 
     async findOne(id: number): Promise<BalanceSheet | undefined> {
         const result = await this.db.select().from(balanceSheets).where(eq(balanceSheets.id, id));

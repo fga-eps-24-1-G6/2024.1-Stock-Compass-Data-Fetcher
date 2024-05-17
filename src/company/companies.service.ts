@@ -6,7 +6,7 @@ import { CreateCompanyDto, GetCompanyDto, UpdateCompanyDto } from './companies.d
 @Injectable()
 export class CompaniesService {
     constructor(
-        @Inject('CompanyRepository') private readonly companyRepository
+        @Inject('CompanyRepository') private readonly companyRepository: CompanyRepository
     ) { }
 
     async getCompany(id: string): Promise<GetCompanyDto | undefined> {
