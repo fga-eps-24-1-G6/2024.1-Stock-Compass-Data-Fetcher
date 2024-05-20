@@ -7,7 +7,7 @@ import { CompanyDrizzleRepository } from "./repositories/company.drizzle.reposit
 @Module({
     imports: [DrizzleModule],
     controllers: [CompaniesController],
-    providers: [CompaniesService, CompanyDrizzleRepository],
-    exports: [CompanyDrizzleRepository]
+    providers: [CompaniesService, { provide: 'CompanyRepository', useClass: CompanyDrizzleRepository }],
+    exports: [{ provide: 'CompanyRepository', useClass: CompanyDrizzleRepository }]
 })
 export class CompanyModule { }

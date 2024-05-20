@@ -1,9 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DividendRepository } from './dividend.repository';
 import { dividends } from '../../db/schema';
-import { eq, max, sql } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { Dividend } from '../dividend.interface';
-import { DrizzleAsyncProvider } from 'src/drizzle/drizzel.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import * as schema from "../../db/schema";
@@ -11,7 +10,7 @@ import { CreateDividendDto, UpdateDividendDto } from '../dividends.dtos';
 
 @Injectable()
 export class DividendDrizzleRepository implements DividendRepository {
-    constructor(@Inject(DrizzleAsyncProvider) private db: NeonHttpDatabase<typeof schema> | NodePgDatabase<typeof schema>) { }
+    constructor(@Inject('DrizzelProvider') private db: NeonHttpDatabase<typeof schema> | NodePgDatabase<typeof schema>) { }
 
     async findOne(id: number): Promise<Dividend | undefined> {
         const result = await this.db.select().from(dividends).where(eq(dividends.id, id));

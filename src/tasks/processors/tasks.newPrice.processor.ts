@@ -4,14 +4,13 @@ import { Job } from 'bull';
 import { catchError, map } from "rxjs/operators";
 import { lastValueFrom } from "rxjs";
 import { HttpService } from '@nestjs/axios';
-import { PriceDrizzleRepository } from 'src/prices/repositories/price.drizzle.repository';
 import { PriceRepository } from 'src/prices/repositories/price.repository';
 import { handleNewPriceData } from '../handlers/price.handler';
 
 @Processor('new_price')
 export class TasksNewPriceProcessor {
     constructor(
-        @Inject(PriceDrizzleRepository) private readonly priceRepository: PriceRepository,
+        @Inject('PriceRepository') private readonly priceRepository: PriceRepository,
         private readonly httpService: HttpService,
     ) { }
 

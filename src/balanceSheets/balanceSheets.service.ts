@@ -1,13 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { BalanceSheetRepository } from './repositories/balanceSheet.repository';
 import { BalanceSheet } from './balanceSheet.interface';
-import { BalanceSheetDrizzleRepository } from './repositories/balanceSheet.drizzle.repository';
 import { CreateBalanceSheetDto, GetBalanceSheetDto, UpdateBalanceSheetDto } from './balanceSheets.dtos';
 
 @Injectable()
 export class BalanceSheetsService {
     constructor(
-        @Inject(BalanceSheetDrizzleRepository) private readonly balanceSheetRepository: BalanceSheetRepository
+        @Inject('BalanceSheetRepository') private readonly balanceSheetRepository: BalanceSheetRepository
     ) { }
 
     async getBalanceSheet(id: string): Promise<GetBalanceSheetDto | undefined> {

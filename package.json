@@ -45,9 +45,9 @@
     "@nestjs/cli": "^10.0.0",
     "@nestjs/config": "^3.2.2",
     "@nestjs/schematics": "^10.0.0",
-    "@nestjs/testing": "^10.0.0",
+    "@nestjs/testing": "^10.3.8",
     "@types/express": "^4.17.17",
-    "@types/jest": "^29.5.2",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20.3.1",
     "@types/pg": "^8.11.5",
     "@types/supertest": "^6.0.0",
@@ -80,7 +80,14 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.(t|j)s",
+      "!**/*.module.(t|j)s",
+      "!**/main.ts",
+      "!**/drizzle/**",
+      "!**/db/**",
+      "!**/utils/**",
+      "!**/scripts/**",
+      "!**/tasks/**"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"

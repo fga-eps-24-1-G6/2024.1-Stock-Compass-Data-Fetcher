@@ -3,15 +3,10 @@ import { Inject, Logger } from '@nestjs/common';
 import { Job } from 'bull';
 import { catchError, map } from "rxjs/operators";
 import { Observable, forkJoin, lastValueFrom } from "rxjs";
-import { StockDrizzleRepository } from 'src/stocks/repositories/stock.drizzle.repository';
 import { HttpService } from '@nestjs/axios';
-import { BalanceSheetDrizzleRepository } from 'src/balanceSheets/repositories/balanceSheet.drizzle.repository';
 import { BalanceSheetRepository } from 'src/balanceSheets/repositories/balanceSheet.repository';
-import { CompanyDrizzleRepository } from 'src/company/repositories/company.drizzle.repository';
 import { CompanyRepository } from 'src/company/repositories/company.repository';
-import { DividendDrizzleRepository } from 'src/dividends/repositories/dividend.drizzle.repository';
 import { DividendRepository } from 'src/dividends/repositories/dividend.repository';
-import { PriceDrizzleRepository } from 'src/prices/repositories/price.drizzle.repository';
 import { PriceRepository } from 'src/prices/repositories/price.repository';
 import { StockRepository } from 'src/stocks/repositories/stock.repository';
 import { handleCompanyData, handleStockData } from '../handlers/stock.handler';
@@ -22,11 +17,11 @@ import { handlePriceHistoryData } from '../handlers/price.handler';
 @Processor('register')
 export class TasksRegisterProcessor {
     constructor(
-        @Inject(StockDrizzleRepository) private readonly stockRepository: StockRepository,
-        @Inject(CompanyDrizzleRepository) private readonly companyRepository: CompanyRepository,
-        @Inject(DividendDrizzleRepository) private readonly dividendRepository: DividendRepository,
-        @Inject(PriceDrizzleRepository) private readonly priceRepository: PriceRepository,
-        @Inject(BalanceSheetDrizzleRepository) private readonly balanceSheetRepository: BalanceSheetRepository,
+        @Inject('StockRepository') private readonly stockRepository: StockRepository,
+        @Inject('CompanyRepository') private readonly companyRepository: CompanyRepository,
+        @Inject('DividendRepository') private readonly dividendRepository: DividendRepository,
+        @Inject('PriceRepository') private readonly priceRepository: PriceRepository,
+        @Inject('BalanceSheetRepository') private readonly balanceSheetRepository: BalanceSheetRepository,
         private readonly httpService: HttpService,
     ) { }
 

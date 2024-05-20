@@ -7,7 +7,7 @@ export class BalanceSheetsController {
   constructor(private readonly balanceSheetsService: BalanceSheetsService) { }
 
   @Get()
-  getAllBalanceSheets(@Query('companyId') id: string): Promise<GetBalanceSheetDto[]> {
+  getAllBalanceSheets(@Query('companyId') id?: string): Promise<GetBalanceSheetDto[]> {
     if (id) return this.balanceSheetsService.getCompanyBalanceSheets(id);
 
     return this.balanceSheetsService.getAllBalanceSheets();

@@ -1,13 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DividendRepository } from './repositories/dividend.repository';
 import { Dividend } from './dividend.interface';
-import { DividendDrizzleRepository } from './repositories/dividend.drizzle.repository';
 import { CreateDividendDto, GetDividendDto, UpdateDividendDto } from './dividends.dtos';
 
 @Injectable()
 export class DividendsService {
     constructor(
-        @Inject(DividendDrizzleRepository) private readonly dividendRepository: DividendRepository
+        @Inject('DividendRepository') private readonly dividendRepository: DividendRepository
     ) { }
 
     async getDividend(id: string): Promise<GetDividendDto | undefined> {
