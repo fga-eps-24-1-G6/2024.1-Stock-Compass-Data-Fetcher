@@ -13,6 +13,5 @@ FROM builder as prod
 RUN yarn install --frozen-lockfle --production
 COPY . .
 ENV ENVIRONMENT=production
-RUN yarn add global @nest/cli
 RUN yarn build
 CMD [ "yarn", "start:prod" ]
